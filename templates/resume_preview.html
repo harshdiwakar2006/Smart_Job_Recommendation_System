@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if resume %}
+            {{ resume.name }} - Resume
+        {% else %}
+            Resume Generator
+        {% endif %}
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #eeeeee;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #222222;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 18mm 18mm 20mm 18mm;
+            background: white;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ---------------------------------------------
+           Header
+        --------------------------------------------- */
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .name {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .title {
+            margin-top: 6px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .contact {
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .contact a {
+            color: #222222;
+            text-decoration: none;
+        }
+
+        .separator {
+            margin: 0 7px;
+            color: #777777;
+        }
+
+        /* ---------------------------------------------
+           Sections
+        --------------------------------------------- */
+
+        .section {
+            margin-top: 18px;
+        }
+
+        .section-title {
+            margin: 0 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #222222;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* ---------------------------------------------
+           Summary
+        --------------------------------------------- */
+
+        .summary {
+            font-size: 12px;
+            line-height: 1.65;
+            text-align: justify;
+        }
+
+        /* ---------------------------------------------
+           Skills
+        --------------------------------------------- */
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .skill {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 9px;
+            border: 1px solid #555555;
+            border-radius: 3px;
+        }
+
+        /* ---------------------------------------------
+           Education
+        --------------------------------------------- */
+
+        .education-item {
+            margin-bottom: 12px;
+        }
+
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .degree {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .institution {
+            margin-top: 3px;
+            font-size: 12px;
+        }
+
+        .education-date {
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .cgpa {
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        /* ---------------------------------------------
+           Experience
+        --------------------------------------------- */
+
+        .experience-item {
+            margin-bottom: 15px;
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .job-title {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .company {
+            margin-top: 3px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .experience-date {
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .description {
+            margin-top: 6px;
+            font-size: 11.5px;
+            line-height: 1.55;
+        }
+
+        /* ---------------------------------------------
+           Projects
+        --------------------------------------------- */
+
+        .project-item {
+            margin-bottom: 15px;
+        }
+
+        .project-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .technologies {
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        .project-description {
+            margin-top: 5px;
+            font-size: 11.5px;
+            line-height: 1.55;
+        }
+
+        .project-links {
+            margin-top: 5px;
+            font-size: 10.5px;
+        }
+
+        .project-links a {
+            color: #222222;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        /* ---------------------------------------------
+           Certifications
+        --------------------------------------------- */
+
+        .certification-item {
+            margin-bottom: 9px;
+            font-size: 12px;
+        }
+
+        .certification-name {
+            font-weight: 700;
+        }
+
+        .certification-organization {
+            margin-left: 5px;
+        }
+
+        .certification-date {
+            margin-left: 5px;
+            font-size: 11px;
+        }
+
+        /* ---------------------------------------------
+           Achievements / Languages
+        --------------------------------------------- */
+
+        .list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .list li {
+            margin-bottom: 5px;
+            font-size: 11.5px;
+            line-height: 1.5;
+        }
+
+        .languages {
+            font-size: 12px;
+        }
+
+        /* ---------------------------------------------
+           Buttons
+        --------------------------------------------- */
+
+        .actions {
+            width: 210mm;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .button {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            background: #222222;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .button:hover {
+            opacity: 0.85;
+        }
+
+        .error {
+            width: 210mm;
+            margin: 0 auto 20px auto;
+            padding: 15px;
+            background: #ffe5e5;
+            border: 1px solid #dd7777;
+            color: #990000;
+            border-radius: 5px;
+        }
+
+        /* ---------------------------------------------
+           Print
+        --------------------------------------------- */
+
+        @media print {
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .page {
+                width: 100%;
+                min-height: auto;
+                margin: 0;
+                padding: 15mm;
+                box-shadow: none;
+            }
+
+            .actions {
+                display: none;
+            }
+
+            .error {
+                display: none;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+
+        /* ---------------------------------------------
+           Mobile
+        --------------------------------------------- */
+
+        @media screen and (max-width: 900px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .page {
+                width: 100%;
+                min-height: auto;
+                padding: 25px;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .education-header,
+            .experience-header {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- ---------------------------------------------
+         ACTION BUTTONS
+    ---------------------------------------------- -->
+
+    {% if resume %}
+
+    <div class="actions">
+
+        <button
+            class="button"
+            onclick="window.print()">
+            Download / Print PDF
+        </button>
+
+        <button
+            class="button"
+            onclick="window.history.back()">
+            Back
+        </button>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ---------------------------------------------
+         ERROR MESSAGE
+    ---------------------------------------------- -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="error">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    {% if resume %}
+
+    <!-- ---------------------------------------------
+         RESUME PAGE
+    ---------------------------------------------- -->
+
+    <div class="page">
+
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            {% if resume.name %}
+
+                <h1 class="name">
+                    {{ resume.name }}
+                </h1>
+
+            {% endif %}
+
+
+            {% if resume.title %}
+
+                <div class="title">
+                    {{ resume.title }}
+                </div>
+
+            {% endif %}
+
+
+            <div class="contact">
+
+                {% if resume.contact.email %}
+
+                    <a href="mailto:{{ resume.contact.email }}">
+                        {{ resume.contact.email }}
+                    </a>
+
+                {% endif %}
+
+
+                {% if resume.contact.phone %}
+
+                    <span class="separator">|</span>
+
+                    {{ resume.contact.phone }}
+
+                {% endif %}
+
+
+                {% if resume.contact.location %}
+
+                    <span class="separator">|</span>
+
+                    {{ resume.contact.location }}
+
+                {% endif %}
+
+
+                {% if resume.contact.linkedin %}
+
+                    <span class="separator">|</span>
+
+                    <a
+                        href="{{ resume.contact.linkedin }}"
+                        target="_blank">
+
+                        LinkedIn
+
+                    </a>
+
+                {% endif %}
+
+
+                {% if resume.contact.github %}
+
+                    <span class="separator">|</span>
+
+                    <a
+                        href="{{ resume.contact.github }}"
+                        target="_blank">
+
+                        GitHub
+
+                    </a>
+
+                {% endif %}
+
+
+                {% if resume.contact.portfolio %}
+
+                    <span class="separator">|</span>
+
+                    <a
+                        href="{{ resume.contact.portfolio }}"
+                        target="_blank">
+
+                        Portfolio
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </header>
+
+
+        <!-- ---------------------------------------------
+             PROFESSIONAL SUMMARY
+        ---------------------------------------------- -->
+
+        {% if resume.summary %}
+
+        <section class="section">
+
+            <h2 class="section-title">
+                Professional Summary
+            </h2>
+
+            <div class="summary">
+                {{ resume.summary }}
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- ---------------------------------------------
+             SKILLS
+        ---------------------------------------------- -->
+
+        {% if resume.skills %}
+
+        <section class="section">
+
+            <h2 class="section-title">
+                Skills
+            </h2>
+
+            <div class="skills">
+
+                {% for skill in resume.skills %}
+
+                    {% if skill %}
+
+                        <span class="skill">
+                            {{ skill }}
+                        </span>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- ---------------------------------------------
+             EDUCATION
+        ---------------------------------------------- -->
+
+        {% if resume.education %}
+
+        <section class="section">
+
+            <h2 class="section-title">
+                Education
+            </h2>
+
+
+            {% for education in resume.education %}
+
+            <div class="education-item">
+
+                <div class="education-header">
+
+                    <div>
+
+                        {% if education.degree %}
+
+                            <div class="degree">
+                                {{ education.degree }}
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if education.institution %}
+
+                            <div class="institution">
+                                {{ education.institution }}
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if education.start_year or education.end_year %}
+
+                    <div class="education-date">
+
+                        {% if education.start_year %}
+                            {{ education.start_year }}
+                        {% endif %}
+
+                        {% if education.start_year and education.end_year %}
+                            -
+                        {% endif %}
+
+                        {% if education.end_year %}
+                            {{ education.end_year }}
+                        {% endif %}
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                {% if education.cgpa %}
+
+                    <div class="cgpa">
+                        CGPA: {{ education.cgpa }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- ---------------------------------------------
+             EXPERIENCE
+        ---------------------------------------------- -->
+
+        {% if resume.experience %}
+
+        <section class="section">
+
+            <h2 class="section-title">
+                Experience
+            </h2>
+
+
+            {% for experience in resume.experience %}
+
+            <div class="experience-item">
+
+                <div class="experience-header">
+
+                    <div>
+
+                        {% if experience.job_title %}
+
+                            <div class="job-title">
+                                {{ experience.job_title }}
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if experience.company %}
+
+                            <div class="company">
+                                {{ experience.company }}
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if experience.start_date or experience.end_date %}
+
+                    <div class="experience-date">
+
+                        {% if experience.start_date %}
+                            {{ experience.start_date }}
+                        {% endif %}
+
+                        {% if experience.start_date and experience.end_date %}
+                            -
+                        {% endif %}
+
+                        {% if experience.end_date %}
+                            {{ experience.end_date }}
+                        {% endif %}
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                {% if experience.description %}
+
+                    <div class="description">
+
+                        {{ experience.description }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- ---------------------------------------------
+             PROJECTS
+        ---------------------------------------------- -->
+
+        {% if resume.projects %}
+
+        <section class="section">
+
+            <h2 class="section-title">
+                Projects
+            </h2>
+
+
+            {% for project in resume.projects %}
+
+            <div class="project-item">
+
+                {% if project.name %}
+
+                    <div class="project-name">
+                        {{ project.name }}
+                    </div>
+
+                {% endif %}
+
+
+                {% if project.technologies %}
+
+                    <div class="technologies">
+
+                        <strong>Technologies:</strong>
+
+                        {% for technology in project.technologies %}
+
+                            {{ technology }}{% if not forloop.last %}, {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if project.description %}
+
+                    <div class="project-description">
+
+                        {{ project.description }}
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if project.github_url or project.project_url %}
+
+                    <div class="project-links">
+
+                        {% if project.github_url %}
+
+                            <a
+                                href="{{ project.github_url }}"
+                                target="_blank">
+
+                                GitHub
+
+                            </a>
+
+                        {% endif %}
+
+
+                        {% if project.project_url %}
+
+                            <a
+                                href="{{ project.project_url }}"
+                                target="_blank">
+
+                                Project Link
+
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- ---------------------------------------------
+             CERTIFICATIONS
+        ---------------------------------------------- -->
+
+        {% if resume.certifications %}
+
+        <section class="section">
+
+            <h2 class="section-title">
+                Certifications
+            </h2>
+
+
+            {% for certification in resume.certifications %}
+
+            <div class="certification-item">
+
+                {% if certification.name %}
+
+                    <span class="certification-name">
+                        {{ certification.name }}
+                    </span>
+
+                {% endif %}
+
+
+                {% if certification.organization %}
+
+                    <span class="certification-organization">
+                        — {{ certification.organization }}
+                    </span>
+
+                {% endif %}
+
+
+                {% if certification.issue_date %}
+
+                    <span class="certification-date">
+                        ({{ certification.issue_date }})
+                    </span>
+
+                {% endif %}
+
+
+                {% if certification.credential_url %}
+
+                    <a
+                        href="{{ certification.credential_url }}"
+                        target="_blank">
+
+                        Credential
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- ---------------------------------------------
+             ACHIEVEMENTS
+        ---------------------------------------------- -->
+
+        {% if resume.achievements %}
+
+        <section class="section">
+
+            <h2 class="section-title">
+                Achievements
+            </h2>
+
+
+            <ul class="list">
+
+                {% for achievement in resume.achievements %}
+
+                    {% if achievement %}
+
+                        <li>
+                            {{ achievement }}
+                        </li>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </ul>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- ---------------------------------------------
+             LANGUAGES
+        ---------------------------------------------- -->
+
+        {% if resume.languages %}
+
+        <section class="section">
+
+            <h2 class="section-title">
+                Languages
+            </h2>
+
+            <div class="languages">
+
+                {% for language in resume.languages %}
+
+                    {{ language }}{% if not forloop.last %}, {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+    </div>
+
+    {% else %}
+
+        <div class="page">
+
+            <h2>
+                Resume could not be generated.
+            </h2>
+
+            <p>
+                Please complete your profile and try again.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+</body>
+
+</html>

@@ -1,0 +1,303 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f5f7fb;
+    color: #1f2937;
+}
+
+/* NAVBAR */
+
+.navbar {
+    height: 70px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 7%;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.profile-status {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* MAIN */
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 40px auto;
+}
+
+.page-heading {
+    margin-bottom: 30px;
+}
+
+.page-heading h1 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.page-heading p {
+    color: #6b7280;
+}
+
+/* PROGRESS */
+
+.progress-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 1px solid #e5e7eb;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress {
+    width: 25%;
+    height: 100%;
+    background: #2563eb;
+}
+
+/* SECTION */
+
+.section {
+    background: white;
+    padding: 30px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.section-header {
+    margin-bottom: 25px;
+}
+
+.section-header h2 {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+.section-header p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* FORM */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+input,
+textarea,
+select {
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+    background: white;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.hint {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 5px;
+}
+
+/* ADD BUTTON */
+
+.add-btn {
+    margin-top: 20px;
+    padding: 10px 18px;
+
+    background: white;
+    border: 1px solid #2563eb;
+    color: #2563eb;
+
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.add-btn:hover {
+    background: #eff6ff;
+}
+
+/* FOOTER BUTTONS */
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 30px;
+}
+
+.save-btn {
+    padding: 13px 28px;
+    border: none;
+    border-radius: 7px;
+
+    background: #2563eb;
+    color: white;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.save-btn:hover {
+    background: #1d4ed8;
+}
+
+.preview-btn {
+    padding: 13px 28px;
+    border-radius: 7px;
+
+    background: white;
+    color: #2563eb;
+
+    border: 1px solid #2563eb;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+/* PHOTO */
+
+.photo-upload {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.photo-circle {
+    width: 90px;
+    height: 90px;
+
+    border-radius: 50%;
+
+    background: #f3f4f6;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #6b7280;
+    font-size: 12px;
+
+    border: 1px dashed #9ca3af;
+}
+
+/* SKILLS */
+
+.skill-input {
+    display: flex;
+    gap: 10px;
+}
+
+.skill-input input {
+    flex: 1;
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .navbar {
+        padding: 0 5%;
+    }
+
+    .container {
+        width: 94%;
+        margin: 25px auto;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .section {
+        padding: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .save-btn,
+    .preview-btn {
+        width: 100%;
+    }
+
+    .page-heading h1 {
+        font-size: 26px;
+    }
+}

@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Job Portal - Register</title>
+
+    <link rel="stylesheet" href="{% static 'registration_style.css' %}">
+</head>
+
+<body>
+
+    <!-- Job portal background -->
+    <div class="background-content">
+
+        <div class="job-card card1">
+            <h3>💼 Software Developer</h3>
+            <p>Google • Bangalore</p>
+            <p>Full Time</p>
+        </div>
+
+        <div class="job-card card2">
+            <h3>📊 Data Analyst</h3>
+            <p>Microsoft • Hyderabad</p>
+            <p>Full Time</p>
+        </div>
+
+        <div class="job-card card3">
+            <h3>🎨 UI/UX Designer</h3>
+            <p>Adobe • Noida</p>
+            <p>Remote Available</p>
+        </div>
+
+        <div class="job-card card4">
+            <h3>🚀 AI Engineer</h3>
+            <p>Amazon • Delhi</p>
+            <p>New Opportunities</p>
+        </div>
+
+    </div>
+
+
+    <!-- Registration Form -->
+    <div class="container">
+
+        <div class="logo">
+            <h2>Job<span>Portal</span></h2>
+        </div>
+
+        <h2>Create Account</h2>
+
+        <p class="subtitle">
+            Find your dream job and build your career
+        </p>
+
+        <form action="{% url 'register' %}" id="registrationForm" method="post">
+            {% csrf_token %}
+
+            <div class="input-group">
+                <label for="email">Email</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+
+
+            <div class="input-group">
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+
+
+            <div class="input-group">
+                <label for="confirmPassword">Confirm Password</label>
+
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    placeholder="Confirm your password"
+                    required
+                >
+            </div>
+
+
+            <button type="submit">
+                Create Account
+            </button>
+
+            <p id="message"></p>
+
+        </form>
+
+
+        <div class="login">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
