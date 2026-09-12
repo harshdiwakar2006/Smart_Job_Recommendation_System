@@ -31,7 +31,11 @@ SECRET_KEY = 'django-insecure-9tfsbcp7nsoim+c*a@5*4y9@)mha-oq+%oi*_oc^1x$z+-srlv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "smart-job-recommendation-system-ogj.vercel.app",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
