@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Build Your Profile</title>
+    <link rel="stylesheet" href="{% static 'resume_style.css' %}">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        JobMatch
+    </div>
+
+    <div class="profile-status">
+        Profile completion: 25%
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <!-- PAGE HEADING -->
+
+    <div class="page-heading">
+
+        <h1>Build Your Profile</h1>
+
+        <p>
+            Tell us about yourself. We'll use this information to create
+            your professional resume.
+        </p>
+
+    </div>
+
+
+    <!-- PROGRESS -->
+
+    <div class="progress-container">
+
+        <div class="progress-info">
+            <span>Profile completion</span>
+            <strong>25%</strong>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <!-- PERSONAL INFORMATION -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Personal Information</h2>
+
+                <p>
+                    Basic information that will appear on your resume.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>First Name *</label>
+
+                    <input
+                        type="text"
+                        name="first_name"
+                        placeholder="e.g. Diwakar"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Last Name *</label>
+
+                    <input
+                        type="text"
+                        name="last_name"
+                        placeholder="e.g. Sharma"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Email *</label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Phone Number</label>
+
+                    <input
+                        type="tel"
+                        name="phone"
+                        placeholder="+91 9876543210"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Location</label>
+
+                    <input
+                        type="text"
+                        name="location"
+                        placeholder="City, State, Country"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Professional Title *</label>
+
+                    <input
+                        type="text"
+                        name="job_title"
+                        placeholder="e.g. Software Developer"
+                        required
+                    >
+
+                    <span class="hint">
+                        Example: Python Developer, Data Scientist, Web Developer
+                    </span>
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label>Profile Photo</label>
+
+                    <div class="photo-upload">
+
+                        <div class="photo-circle">
+                            Photo
+                        </div>
+
+                        <input
+                            type="file"
+                            name="profile_photo"
+                            accept="image/*"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFESSIONAL SUMMARY -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Professional Summary</h2>
+
+                <p>
+                    Write a short introduction about yourself.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group full-width">
+
+                    <label>About Me *</label>
+
+                    <textarea
+                        name="summary"
+                        placeholder="Example: Computer Science student passionate about building web applications..."
+                        required
+                    ></textarea>
+
+                    <span class="hint">
+                        Recommended: 3–5 sentences
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- EDUCATION -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Education</h2>
+
+                <p>
+                    Add your academic qualifications.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Degree *</label>
+
+                    <input
+                        type="text"
+                        name="degree"
+                        placeholder="e.g. B.Tech Computer Science"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Institution *</label>
+
+                    <input
+                        type="text"
+                        name="institution"
+                        placeholder="University / College name"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Start Year</label>
+
+                    <input
+                        type="number"
+                        name="education_start"
+                        placeholder="2024"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>End Year</label>
+
+                    <input
+                        type="number"
+                        name="education_end"
+                        placeholder="2028"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Grade / CGPA</label>
+
+                    <input
+                        type="text"
+                        name="cgpa"
+                        placeholder="e.g. 8.5 CGPA"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button type="button" class="add-btn">
+                + Add another education
+            </button>
+
+        </div>
+
+
+        <!-- SKILLS -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Skills</h2>
+
+                <p>
+                    Add technical and professional skills.
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Technical Skills *</label>
+
+                <input
+                    type="text"
+                    name="skills"
+                    placeholder="Java, Python, Django, SQL, HTML, CSS..."
+                >
+
+                <span class="hint">
+                    Separate skills with commas.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- EXPERIENCE -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Work Experience</h2>
+
+                <p>
+                    Add internships, jobs, freelance work, or relevant experience.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Job Title</label>
+
+                    <input
+                        type="text"
+                        name="experience_title"
+                        placeholder="e.g. Software Developer Intern"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Company</label>
+
+                    <input
+                        type="text"
+                        name="company"
+                        placeholder="Company name"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Start Date</label>
+
+                    <input
+                        type="month"
+                        name="experience_start"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>End Date</label>
+
+                    <input
+                        type="month"
+                        name="experience_end"
+                    >
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label>Responsibilities & Achievements</label>
+
+                    <textarea
+                        name="experience_description"
+                        placeholder="Describe what you worked on and the results you achieved..."
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <button type="button" class="add-btn">
+                + Add another experience
+            </button>
+
+        </div>
+
+
+        <!-- PROJECTS -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Projects</h2>
+
+                <p>
+                    Showcase projects that demonstrate your abilities.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Project Name</label>
+
+                    <input
+                        type="text"
+                        name="project_name"
+                        placeholder="e.g. Job Recommendation System"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Technologies Used</label>
+
+                    <input
+                        type="text"
+                        name="project_technologies"
+                        placeholder="Django, PostgreSQL, HTML, CSS"
+                    >
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label>Project Description</label>
+
+                    <textarea
+                        name="project_description"
+                        placeholder="Explain what the project does, what you built, and your contribution..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>GitHub URL</label>
+
+                    <input
+                        type="url"
+                        name="github_url"
+                        placeholder="https://github.com/username/project"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Live Project URL</label>
+
+                    <input
+                        type="url"
+                        name="project_url"
+                        placeholder="https://example.com"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button type="button" class="add-btn">
+                + Add another project
+            </button>
+
+        </div>
+
+
+        <!-- CERTIFICATIONS -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Certifications</h2>
+
+                <p>
+                    Add relevant certifications and courses.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Certificate Name</label>
+
+                    <input
+                        type="text"
+                        name="certificate_name"
+                        placeholder="e.g. AWS Cloud Practitioner"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Issuing Organization</label>
+
+                    <input
+                        type="text"
+                        name="certificate_organization"
+                        placeholder="Amazon Web Services"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Issue Date</label>
+
+                    <input
+                        type="month"
+                        name="certificate_date"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Credential URL</label>
+
+                    <input
+                        type="url"
+                        name="certificate_url"
+                        placeholder="https://..."
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button type="button" class="add-btn">
+                + Add another certification
+            </button>
+
+        </div>
+
+
+        <!-- ACHIEVEMENTS -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Achievements</h2>
+
+                <p>
+                    Highlight awards, competitions, rankings, or other accomplishments.
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Achievements</label>
+
+                <textarea
+                    name="achievements"
+                    placeholder="e.g. Won first place in college hackathon..."
+                ></textarea>
+
+            </div>
+
+        </div>
+
+
+        <!-- LANGUAGES -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Languages</h2>
+
+                <p>
+                    What languages can you communicate in?
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Languages</label>
+
+                    <input
+                        type="text"
+                        name="languages"
+                        placeholder="English, Hindi, Spanish..."
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LINKS -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Professional Links</h2>
+
+                <p>
+                    Add links recruiters can use to learn more about you.
+                </p>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>LinkedIn</label>
+
+                    <input
+                        type="url"
+                        name="linkedin"
+                        placeholder="https://linkedin.com/in/username"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>GitHub</label>
+
+                    <input
+                        type="url"
+                        name="github"
+                        placeholder="https://github.com/username"
+                    >
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label>Portfolio Website</label>
+
+                    <input
+                        type="url"
+                        name="portfolio"
+                        placeholder="https://yourportfolio.com"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="form-actions">
+
+            <a href="{% url 'generate_resume' %}">
+                <button type="button" class="preview-btn">Preview Resume</button>
+            </a>
+
+
+            <button
+                type="submit"
+                class="save-btn"
+            >
+                Save Profile
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

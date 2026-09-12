@@ -1,0 +1,42 @@
+
+/* =========================
+   FORGOT PASSWORD
+   ========================= */
+
+.forgot-password {
+    text-align: right;
+
+    margin-top: -8px;
+    margin-bottom: 18px;
+}
+
+.forgot-password a {
+    color: #1769aa;
+
+    text-decoration: none;
+
+    font-size: 13px;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+
+/* Login page heading */
+
+.container > h2 {
+    text-align: center;
+
+    color: #222;
+
+    margin-bottom: 8px;
+}
+
+
+/* Login button */
+
+button {
+    margin-top: 2px;
+}
+
