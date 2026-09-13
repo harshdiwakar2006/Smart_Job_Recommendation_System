@@ -8,9 +8,11 @@ https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/
 """
 
 import os
-
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'authentication.settings')
 
 application = get_wsgi_application()
+
+# Required by Vercel serverless function entrypoint
+app = application
