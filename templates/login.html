@@ -291,8 +291,13 @@ button {
             Login to find your dream job
         </p>
 
+        {% if messages %}
+            {% for message in messages %}
+                <p id="message" class="{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
 
-        <form action={% url 'login' %} id="loginForm" method="post">
+        <form action="{% url 'login' %}" id="loginForm" method="post">
             {% csrf_token %}
 
             <!-- Email -->
