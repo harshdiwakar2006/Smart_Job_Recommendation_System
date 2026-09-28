@@ -38,6 +38,7 @@ def parse_results(batches):
 def dashboard_view(request):
     profile = Profile.objects.filter(user=request.user).first()
     skills = list(profile.skills.values_list("name", flat=True)) if profile else []
+    
 
     jobs = []
     error = None
