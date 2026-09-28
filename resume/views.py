@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from ai.services import generate_resume
 from .services import get_candidate_data
+from .models import Resume
 
 
 @login_required
@@ -15,6 +16,12 @@ def generate_resume_view(request):
         generated_resume = generate_resume(
             candidate_data=candidate_data,
             job_description="",
+        )
+
+        # Save generated resume to database
+        resume = Resume.objects.create(
+            user=request.user,
+            content=generated_resume,
         )
 
         return render(

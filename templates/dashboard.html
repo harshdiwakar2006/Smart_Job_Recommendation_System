@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job matches for your skills</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f5f7;
+      --surface: #ffffff;
+      --ink: #14213d;
+      --muted: #5c6b80;
+      --line: #dbe1e8;
+      --high: #0b7a5c;
+      --mid: #c98a00;
+      --low: #b5483a;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1522;
+        --surface: #16203155;
+        --ink: #e8edf5;
+        --muted: #93a1b5;
+        --line: #26324a;
+        --high: #3fc79e;
+        --mid: #e6b23a;
+        --low: #e37f70;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Public Sans", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+    h1 {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      line-height: 1.1;
+      margin: 0 0 8px;
+    }
+    .lede { color: var(--muted); margin: 0 0 28px; }
+
+    form { display: flex; gap: 8px; margin-bottom: 32px; }
+    input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+    button {
+      padding: 12px 20px;
+      font: inherit;
+      font-weight: 600;
+      color: #fff;
+      background: var(--ink);
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    @media (prefers-color-scheme: dark) { button { color: #0e1522; } }
+    input:focus-visible, button:focus-visible {
+      outline: 3px solid var(--high);
+      outline-offset: 2px;
+    }
+
+    .skills { display: flex; flex-wrap: wrap; gap: 6px; margin: -16px 0 28px; padding: 0; list-style: none; }
+    .skills li {
+      font-size: .85rem;
+      padding: 2px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+    }
+
+    .count { font-weight: 600; margin: 0 0 12px; }
+
+    .jobs { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+    .job {
+      display: grid;
+      grid-template-columns: 1fr 76px;
+      gap: 4px 20px;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .job h2 {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin: 0;
+    }
+    .job .company { color: var(--muted); font-size: .95rem; margin: 0; }
+    .score { grid-row: 1 / span 2; grid-column: 2; text-align: right; }
+    .score strong {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+    .bar {
+      grid-column: 1 / -1;
+      height: 4px;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .bar span { display: block; height: 100%; border-radius: 2px; }
+    .high { color: var(--high); } .high.fill, .bar .high { background: var(--high); }
+    .mid  { color: var(--mid); }  .bar .mid  { background: var(--mid); }
+    .low  { color: var(--low); }  .bar .low  { background: var(--low); }
+
+    .notice {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+    }
+    .notice.error { border-color: var(--low); color: var(--low); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Jobs that match your skills</h1>
+    <p class="lede">Enter your skills separated by commas. Results are ranked by match percentage.</p>
+
+    <form method="get">
+      <input type="text" name="skills" value="{{ skills_text }}"
+             placeholder="Python, Django, SQL" aria-label="Your skills" required>
+      <button type="submit">Find jobs</button>
+    </form>
+
+    {% if skills %}
+      <ul class="skills" aria-label="Skills searched">
+        {% for skill in skills %}<li>{{ skill }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if error %}
+      <div class="notice error" role="alert">
+        Couldn't load recommendations: {{ error }}
+      </div>
+
+    {% elif jobs %}
+      <p class="count">{{ jobs|length }} job{{ jobs|length|pluralize }} found</p>
+      <ol class="jobs">
+        {% for job in jobs %}
+          <li class="job">
+            <div>
+              <h2>{{ job.title }}</h2>
+              <p class="company">{{ job.company }}</p>
+            </div>
+            <div class="score {% if job.score >= 70 %}high{% elif job.score >= 40 %}mid{% else %}low{% endif %}">
+              <strong>{{ job.score|floatformat:"0" }}%</strong>
+            </div>
+            <div class="bar" role="img" aria-label="{{ job.score|floatformat:'0' }} percent match">
+              <span class="{% if job.score >= 70 %}high{% elif job.score >= 40 %}mid{% else %}low{% endif %}"
+                    style="width: {{ job.score|floatformat:'0' }}%"></span>
+            </div>
+          </li>
+        {% endfor %}
+      </ol>
+
+    {% elif searched %}
+      <div class="notice">
+        No matching jobs came back. Try different or broader skills.
+      </div>
+
+    {% else %}
+      <div class="notice">Add your skills above to see recommendations.</div>
+    {% endif %}
+  </main>
+</body>
+</html>

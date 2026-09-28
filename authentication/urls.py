@@ -18,10 +18,15 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
 
+from accounts import views as accounts_views
+
 urlpatterns = [
     path('favicon.ico', lambda request: HttpResponse(status=204)),
     path('favicon.png', lambda request: HttpResponse(status=204)),
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
-    path('resume/', include('resume.urls'))
+    path('login/', accounts_views.login_view, name='legacy_login'),
+    path('profile/', accounts_views.profile_view, name='legacy_profile'),
+    path('resume/', include('resume.urls')),
+    path('jobs/', include('job_engine.urls'))
 ]

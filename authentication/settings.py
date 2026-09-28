@@ -23,6 +23,8 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+LOGIN_URL = "/accounts/login/"
+
 # Required for login forms, admin, and POST requests on Vercel
 CSRF_TRUSTED_ORIGINS = [
     "https://*.vercel.app",
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     "accounts",
     "resume",
     "ai",
+    "job_engine",
 ]
 
 MIDDLEWARE = [
