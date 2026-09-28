@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 # --- Security & Core Settings ---
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-key-for-local-only")
+SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("DB_SECRET_KEY") or "django-insecure-fallback-key-for-local-only"
 
 # Production defaults to False unless explicitly set to True
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
