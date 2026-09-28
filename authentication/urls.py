@@ -16,7 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.http import HttpResponse
-from django.shortcuts import redirect
 from django.urls import include, path
 
 from accounts import views as accounts_views
@@ -24,7 +23,6 @@ from accounts import views as accounts_views
 urlpatterns = [
     path('favicon.ico', lambda request: HttpResponse(status=204)),
     path('favicon.png', lambda request: HttpResponse(status=204)),
-    path('', lambda request: redirect('register')),
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
     path('login/', accounts_views.login_view, name='legacy_login'),
