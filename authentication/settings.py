@@ -25,6 +25,13 @@ ALLOWED_HOSTS = [
 
 LOGIN_URL = "/accounts/login/"
 
+# Keep authentication sessions self-contained on Vercel. Serverless deployments
+# do not guarantee that the django_session database table has been migrated.
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+
 # Required for login forms, admin, and POST requests on Vercel
 CSRF_TRUSTED_ORIGINS = [
     "https://*.vercel.app",
