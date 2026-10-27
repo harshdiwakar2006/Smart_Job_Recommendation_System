@@ -118,14 +118,23 @@
 
     .count { font-weight: 600; margin: 0 0 12px; }
 
-    .jobs { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+    .jobs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+      gap: 16px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
     .job {
       display: grid;
       grid-template-columns: 1fr 76px;
       gap: 4px 20px;
       align-items: center;
-      padding: 18px 0;
-      border-bottom: 1px solid var(--line);
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
     }
     .job h2 {
       font-family: "Bricolage Grotesque", sans-serif;
@@ -204,41 +213,125 @@
           </ul>
         {% endif %}
 
-        {% if error %}
-          <div class="notice error" role="alert">
-            Couldn't load recommendations: {{ error }}
-          </div>
-
-        {% elif jobs %}
-          <p class="count">{{ jobs|length }} job{{ jobs|length|pluralize }} found</p>
-          <ol class="jobs">
-            {% for job in jobs %}
-              <li class="job">
-                <div>
-                  <h2>{{ job.title }}</h2>
-                  <p class="company">{{ job.company }}</p>
-                </div>
-                <div class="score {% if job.score >= 70 %}high{% elif job.score >= 40 %}mid{% else %}low{% endif %}">
-                  <strong>{{ job.score|floatformat:"0" }}%</strong>
-                </div>
-                <div class="bar" role="img" aria-label="{{ job.score|floatformat:'0' }} percent match">
-                  <span class="{% if job.score >= 70 %}high{% elif job.score >= 40 %}mid{% else %}low{% endif %}"
-                        style="width: {{ job.score|floatformat:'0' }}%"></span>
-                </div>
-              </li>
-            {% endfor %}
-          </ol>
-
-        {% elif searched %}
-          <div class="notice">
-            No matching jobs came back. Try different or broader skills.
-          </div>
-
+        {% if skills %}
+          <p id="recommendation-status" class="count" role="status" aria-live="polite">
+            Finding matching jobs...
+          </p>
+          <div id="recommendation-error" class="notice error" role="alert" hidden></div>
+          <ol id="job-results" class="jobs" aria-label="Job recommendations"></ol>
         {% else %}
           <div class="notice">Add your skills above to see recommendations.</div>
         {% endif %}
       </div>
     </main>
   </div>
+  {% if skills %}
+    <script>
+      const skillsInput = document.querySelector('input[name="skills"]');
+      const status = document.getElementById("recommendation-status");
+      const errorNotice = document.getElementById("recommendation-error");
+      const jobResults = document.getElementById("job-results");
+      const streamUrl = "{% url 'stream_jobs' %}";
+      const jobs = [];
+      let completed = false;
+
+      function renderJobs() {
+        jobs.sort((left, right) => right.score - left.score);
+        jobResults.replaceChildren();
+
+        for (const job of jobs) {
+          const score = Number(job.score) || 0;
+          const level = score >= 70 ? "high" : score >= 40 ? "mid" : "low";
+          const item = document.createElement("li");
+          item.className = "job";
+
+          const details = document.createElement("div");
+          const title = document.createElement("h2");
+          title.textContent = job.title;
+          const company = document.createElement("p");
+          company.className = "company";
+          company.textContent = job.company;
+          details.append(title, company);
+
+          const scoreElement = document.createElement("div");
+          scoreElement.className = `score ${level}`;
+          const scoreText = document.createElement("strong");
+          scoreText.textContent = `${Math.round(score)}%`;
+          scoreElement.append(scoreText);
+
+          const bar = document.createElement("div");
+          bar.className = "bar";
+          bar.setAttribute("role", "img");
+          bar.setAttribute("aria-label", `${Math.round(score)} percent match`);
+          const fill = document.createElement("span");
+          fill.className = level;
+          fill.style.width = `${Math.max(0, Math.min(100, score))}%`;
+          bar.append(fill);
+
+          item.append(details, scoreElement, bar);
+          jobResults.append(item);
+        }
+      }
+
+      function handleEvent(frame) {
+        const eventName = frame.split("\n").find(line => line.startsWith("event:"))?.slice(6).trim();
+        const dataLine = frame.split("\n").find(line => line.startsWith("data:"));
+        const data = dataLine ? JSON.parse(dataLine.slice(5).trim()) : {};
+
+        if (eventName === "batch") {
+          jobs.push(...data.jobs);
+          renderJobs();
+          status.textContent = `${jobs.length} job${jobs.length === 1 ? "" : "s"} found so far...`;
+        } else if (eventName === "done") {
+          completed = true;
+          status.textContent = jobs.length
+            ? `${jobs.length} job${jobs.length === 1 ? "" : "s"} found`
+            : "No matching jobs came back. Try different or broader skills.";
+        } else if (eventName === "error") {
+          throw new Error(data.message);
+        }
+      }
+
+      async function loadRecommendations() {
+        try {
+          const params = new URLSearchParams({ skills: skillsInput.value });
+          const response = await fetch(`${streamUrl}?${params}`, {
+            headers: { "Accept": "text/event-stream" }
+          });
+          if (!response.ok || !response.body) {
+            throw new Error("Could not start loading recommendations. Please try again.");
+          }
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, "\n");
+            let boundary = buffer.indexOf("\n\n");
+            while (boundary !== -1) {
+              const frame = buffer.slice(0, boundary);
+              buffer = buffer.slice(boundary + 2);
+              if (frame) handleEvent(frame);
+              boundary = buffer.indexOf("\n\n");
+            }
+          }
+          if (!completed) {
+            throw new Error("The recommendation stream ended before it finished.");
+          }
+        } catch (error) {
+          errorNotice.textContent = error.message;
+          errorNotice.hidden = false;
+          status.textContent = jobs.length
+            ? `${jobs.length} job${jobs.length === 1 ? "" : "s"} loaded; more results could not be fetched.`
+            : "Recommendations could not be loaded.";
+        }
+      }
+
+      loadRecommendations();
+    </script>
+  {% endif %}
 </body>
 </html>

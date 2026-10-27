@@ -27,21 +27,16 @@ def get_jobs():
         "format": "json"
     }
 
-    try:
-        response = requests.get(
-            url,
-            headers=headers,
-            params=params,
-            timeout=30
-        )
+    response = requests.get(
+        url,
+        headers=headers,
+        params=params,
+        timeout=30
+    )
 
-        response.raise_for_status()
+    response.raise_for_status()
 
-        return response.json()
-
-    except requests.RequestException as e:
-        print(f"Error fetching jobs: {e}")
-        return []
+    return response.json()
 
 
 # -----------------------------
@@ -101,15 +96,12 @@ def recommended_jobs(skills):
 
     jobs = get_jobs()
     if not jobs:
-        print("No jobs found.")
-        return []
+        return
 
     slimmed_jobs = [slim_job(job) for job in jobs]
 
     BATCH_SIZE = 8  # tune this down further if you still hit length errors
-    all_results = []
-
-    for batch_num, batch in enumerate(chunk_list(slimmed_jobs, BATCH_SIZE), start=1):
+    for batch in chunk_list(slimmed_jobs, BATCH_SIZE):
         prompt = f"""
 You are a job recommendation system.
 
@@ -119,37 +111,26 @@ Candidate skills:
 Here is a list of jobs:
 {json.dumps(batch, indent=2)}
 
-Output ONLY the job listings sorted in descending order by skill matching percentage.
+Output ONLY the jobs in this batch, sorted in descending order by skill matching percentage.
 For each job output exactly this format, nothing else:
 <percentage>% - <job title> - <company>
 
 No explanations, no headers, no extra text.
-Combine all the batches and sort them in descending order.
 """
 
-        try:
-            response = client.chat.completions.create(
-                model="openai/gpt-oss-20b",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are an accurate job matching assistant."
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
-                temperature=0
-            )
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-20b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an accurate job matching assistant."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0
+        )
 
-            result = response.choices[0].message.content
-            all_results.append(result)
-
-            #print(result)
-            #print(f"\n--- Job Recommendations (batch {batch_num}) ---\n")
-
-        except Exception as e:
-            print(f"Groq API error on batch {batch_num}: {e}")
-
-    return all_results
+        yield response.choices[0].message.content or ""

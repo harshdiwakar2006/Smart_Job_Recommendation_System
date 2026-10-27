@@ -13,6 +13,8 @@ from .models import (
     Achievement,
     Language
 )
+def overview_view(request):
+    return render(request, 'overview.html')
 
 def registration_view(request):
     if request.method == "POST":
