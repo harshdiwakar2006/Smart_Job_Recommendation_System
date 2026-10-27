@@ -1,26 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "python manage.py collectstatic --noinput",
-  "builds": [
+  "redirects": [
     {
-      "src": "authentication/wsgi.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "^/login$",
-      "status": 308,
-      "dest": "/login/"
+      "source": "/login",
+      "destination": "/login/",
+      "permanent": true
     },
     {
-      "src": "^/register/$",
-      "status": 308,
-      "dest": "/register"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "authentication/wsgi.py"
+      "source": "/register/",
+      "destination": "/register",
+      "permanent": true
     }
   ]
 }

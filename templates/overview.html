@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+{% load static %}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Shortlist – Job recommendations that fit you</title>
+<title>Hirely</title>
+<link rel="icon" type="image/png" href="{% static 'icon.png' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -27,7 +29,8 @@ a{color:inherit}
 :focus-visible{outline:3px solid var(--hi);outline-offset:2px}
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
-.logo{font:800 22px "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;text-decoration:none}
+.logo{display:flex;align-items:center;text-decoration:none}
+.logo img{display:block;width:72px;height:72px;object-fit:contain}
 .logo i{font-style:normal;color:var(--brand)}
 nav{display:flex;gap:10px;align-items:center}
 .btn{display:inline-block;text-align:center;text-decoration:none;font:600 16px "Source Sans 3",sans-serif;border-radius:10px;padding:10px 18px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
@@ -128,7 +131,9 @@ footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-s
 <body>
 <div class="wrap">
   <header>
-    <a class="logo" href="#top">short<i>list</i></a>
+    <a class="logo" href="{% url 'overview' %}" aria-label="Hirely home">
+      <img src="{% static 'icon.png' %}" alt="Hirely">
+    </a>
     <nav aria-label="Account">
       <button class="btn icon" id="theme" aria-label="Switch light or dark theme">◐</button>
       <a class="btn" href="{% url 'login' %}">Sign in</a>
