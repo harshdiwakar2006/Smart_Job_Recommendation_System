@@ -59,7 +59,8 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect("profile")
+            destination = "dashboard" if Profile.objects.filter(user=user).exists() else "profile"
+            return redirect(destination)
 
         messages.error(request, "Invalid email or password")
 
@@ -227,6 +228,6 @@ def profile_view(request):
                         name=language
                     )
 
-        return redirect("profile")
+        return redirect("dashboard")
 
     return render(request, "profile.html")

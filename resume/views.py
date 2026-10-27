@@ -19,8 +19,8 @@ def generate_resume_view(request):
         )
 
         # Save generated resume to database
-        resume = Resume.objects.create(
-            user=request.user,
+        Resume.objects.create(
+            profile=request.user.profile,
             content=generated_resume,
         )
 

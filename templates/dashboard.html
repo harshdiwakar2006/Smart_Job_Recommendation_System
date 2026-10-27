@@ -38,7 +38,39 @@
       font-family: "Public Sans", system-ui, sans-serif;
       line-height: 1.5;
     }
-    .wrap { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+    .dashboard-layout { min-height: 100vh; }
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      width: 240px;
+      padding: 28px 18px;
+      border-right: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .brand {
+      margin: 0 10px 34px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .sidebar-nav { display: grid; gap: 6px; }
+    .sidebar-nav a {
+      padding: 11px 12px;
+      border-radius: 6px;
+      color: var(--muted);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .sidebar-nav a:hover,
+    .sidebar-nav a[aria-current="page"] {
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .main-content { min-width: 0; margin-left: 240px; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 48px 32px 80px; }
     h1 {
       font-family: "Bricolage Grotesque", sans-serif;
       font-weight: 700;
@@ -128,58 +160,85 @@
       background: var(--surface);
     }
     .notice.error { border-color: var(--low); color: var(--low); }
+    @media (max-width: 640px) {
+      .sidebar {
+        position: static;
+        width: auto;
+        padding: 14px 16px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .brand { margin: 0 0 10px; }
+      .sidebar-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .sidebar-nav a { padding: 8px 6px; text-align: center; font-size: .9rem; }
+      .main-content { margin-left: 0; }
+      .wrap { padding: 32px 18px 56px; }
+    }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <h1>Jobs that match your skills</h1>
-    <p class="lede">Enter your skills separated by commas. Results are ranked by match percentage.</p>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <p class="brand">JobMatch</p>
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <a href="{% url 'dashboard' %}" aria-current="page">Dashboard</a>
+        <a href="{% url 'profile' %}">Edit Profile</a>
+        <a href="{% url 'generate_resume' %}">View Resume</a>
+      </nav>
+    </aside>
 
-    <form method="get">
-      <input type="text" name="skills" value="{{ skills_text }}"
-             placeholder="Python, Django, SQL" aria-label="Your skills" required>
-      <button type="submit">Find jobs</button>
-    </form>
+    <main class="main-content">
+      <div class="wrap">
+        <h1>Jobs that match your skills</h1>
+        <p class="lede">Enter your skills separated by commas. Results are ranked by match percentage.</p>
 
-    {% if skills %}
-      <ul class="skills" aria-label="Skills searched">
-        {% for skill in skills %}<li>{{ skill }}</li>{% endfor %}
-      </ul>
-    {% endif %}
+        <form method="get">
+          <input type="text" name="skills" value="{{ skills_text }}"
+                 placeholder="Python, Django, SQL" aria-label="Your skills" required>
+          <button type="submit">Find jobs</button>
+        </form>
 
-    {% if error %}
-      <div class="notice error" role="alert">
-        Couldn't load recommendations: {{ error }}
+        {% if skills %}
+          <ul class="skills" aria-label="Skills searched">
+            {% for skill in skills %}<li>{{ skill }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if error %}
+          <div class="notice error" role="alert">
+            Couldn't load recommendations: {{ error }}
+          </div>
+
+        {% elif jobs %}
+          <p class="count">{{ jobs|length }} job{{ jobs|length|pluralize }} found</p>
+          <ol class="jobs">
+            {% for job in jobs %}
+              <li class="job">
+                <div>
+                  <h2>{{ job.title }}</h2>
+                  <p class="company">{{ job.company }}</p>
+                </div>
+                <div class="score {% if job.score >= 70 %}high{% elif job.score >= 40 %}mid{% else %}low{% endif %}">
+                  <strong>{{ job.score|floatformat:"0" }}%</strong>
+                </div>
+                <div class="bar" role="img" aria-label="{{ job.score|floatformat:'0' }} percent match">
+                  <span class="{% if job.score >= 70 %}high{% elif job.score >= 40 %}mid{% else %}low{% endif %}"
+                        style="width: {{ job.score|floatformat:'0' }}%"></span>
+                </div>
+              </li>
+            {% endfor %}
+          </ol>
+
+        {% elif searched %}
+          <div class="notice">
+            No matching jobs came back. Try different or broader skills.
+          </div>
+
+        {% else %}
+          <div class="notice">Add your skills above to see recommendations.</div>
+        {% endif %}
       </div>
-
-    {% elif jobs %}
-      <p class="count">{{ jobs|length }} job{{ jobs|length|pluralize }} found</p>
-      <ol class="jobs">
-        {% for job in jobs %}
-          <li class="job">
-            <div>
-              <h2>{{ job.title }}</h2>
-              <p class="company">{{ job.company }}</p>
-            </div>
-            <div class="score {% if job.score >= 70 %}high{% elif job.score >= 40 %}mid{% else %}low{% endif %}">
-              <strong>{{ job.score|floatformat:"0" }}%</strong>
-            </div>
-            <div class="bar" role="img" aria-label="{{ job.score|floatformat:'0' }} percent match">
-              <span class="{% if job.score >= 70 %}high{% elif job.score >= 40 %}mid{% else %}low{% endif %}"
-                    style="width: {{ job.score|floatformat:'0' }}%"></span>
-            </div>
-          </li>
-        {% endfor %}
-      </ol>
-
-    {% elif searched %}
-      <div class="notice">
-        No matching jobs came back. Try different or broader skills.
-      </div>
-
-    {% else %}
-      <div class="notice">Add your skills above to see recommendations.</div>
-    {% endif %}
-  </main>
+    </main>
+  </div>
 </body>
 </html>
