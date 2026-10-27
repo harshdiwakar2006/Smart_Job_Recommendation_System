@@ -1,15 +1,11 @@
 {
   "version": 2,
   "buildCommand": "python manage.py migrate --noinput && python manage.py collectstatic --noinput",
-  "builds": [
-    {
-      "src": "authentication/wsgi.py",
-      "use": "@vercel/python",
-      "config": {
-        "runtime": "python3.12"
-      }
+  "functions": {
+    "authentication/wsgi.py": {
+      "runtime": "python3.12"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/(.*)",
