@@ -1,15 +1,33 @@
 {
   "version": 2,
-  "redirects": [
+  "builds": [
     {
-      "source": "/login",
-      "destination": "/login/",
-      "permanent": true
+      "src": "authentication/wsgi.py",
+      "use": "@vercel/python"
     },
     {
-      "source": "/register/",
-      "destination": "/register",
-      "permanent": true
+      "src": "staticfiles/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "^/static/(.*)",
+      "dest": "/staticfiles/$1"
+    },
+    {
+      "src": "^/login$",
+      "status": 308,
+      "dest": "/login/"
+    },
+    {
+      "src": "^/register/$",
+      "status": 308,
+      "dest": "/register"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "authentication/wsgi.py"
     }
   ]
 }
