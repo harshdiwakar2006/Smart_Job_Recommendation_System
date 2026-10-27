@@ -19,6 +19,7 @@ from django.http import HttpResponse
 from django.urls import include, path
 
 from accounts import views as accounts_views
+from job_engine import views as job_views
 
 urlpatterns = [
     path('favicon.ico', lambda request: HttpResponse(status=204)),
@@ -27,6 +28,8 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('login/', accounts_views.login_view, name='legacy_login'),
     path('profile/', accounts_views.profile_view, name='legacy_profile'),
+    path('dashboard/', job_views.dashboard_view, name='dashboard'),
+    path('overview/', job_views.dashboard_view, name='overview'),
     path('resume/', include('resume.urls')),
     path('jobs/', include('job_engine.urls'))
 ]

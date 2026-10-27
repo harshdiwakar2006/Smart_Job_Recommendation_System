@@ -59,7 +59,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect("profile")
+            return redirect("dashboard")
 
         messages.error(request, "Invalid email or password")
 

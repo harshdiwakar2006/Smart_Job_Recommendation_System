@@ -55,6 +55,8 @@ def dashboard_view(request):
         {
             "jobs": jobs,
             "skills": skills,
+            "skills_text": ", ".join(skills),
+            "searched": bool(request.GET.get("skills")),
             "error": error,
         },
     )
