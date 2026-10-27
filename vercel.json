@@ -14,6 +14,16 @@
   },
   "routes": [
     {
+      "src": "^/login$",
+      "status": 308,
+      "dest": "/login/"
+    },
+    {
+      "src": "^/register/$",
+      "status": 308,
+      "dest": "/register"
+    },
+    {
       "src": "/(.*)",
       "dest": "authentication/wsgi.py"
     }
