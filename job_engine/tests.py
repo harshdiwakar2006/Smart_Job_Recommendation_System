@@ -2,6 +2,10 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from unittest.mock import patch
+from unittest.mock import MagicMock
+
+from .services import recommended_jobs
+from .views import parse_results
 
 
 class DashboardNavigationTests(TestCase):
@@ -91,3 +95,67 @@ class StreamingRecommendationsTests(TestCase):
         self.assertIn("Python Developer", body)
         self.assertIn("event: error", body)
         self.assertNotIn("upstream failure", body)
+
+    @patch("job_engine.views.recommended_jobs")
+    def test_stream_includes_safe_source_apply_url(self, recommendations):
+        recommendations.return_value = iter(
+            ["85% - Python Developer - Acme | apply: https://jobs.example/apply/1"]
+        )
+        response = self.client.get(
+            reverse("stream_jobs"),
+            {"skills": "Python"},
+        )
+
+        body = b"".join(response.streaming_content).decode()
+
+        self.assertIn('"apply_url": "https://jobs.example/apply/1"', body)
+
+
+class JobApplyUrlTests(TestCase):
+    def test_parse_results_only_accepts_http_apply_urls(self):
+        jobs = parse_results(
+            [
+                "85% - Python Developer - Acme | apply: https://jobs.example/apply/1\n"
+                "70% - Data Analyst - Example | apply: javascript:alert(1)\n"
+                "60% - Designer - Studio | apply: https://[invalid"
+            ]
+        )
+
+        self.assertEqual(jobs[0]["apply_url"], "https://jobs.example/apply/1")
+        self.assertEqual(jobs[1]["apply_url"], "")
+        self.assertEqual(jobs[2]["apply_url"], "")
+
+    def test_recommendations_attach_url_from_matching_source_job(self):
+        job_source = [
+            {
+                "title": "Python Developer",
+                "company": "Acme",
+                "description": "Build Python services.",
+                "url": "https://jobs.example/python",
+            },
+            {
+                "title": "Data Analyst",
+                "company": "Example",
+                "description": "Analyze data.",
+                "url": "https://jobs.example/analyst",
+            },
+        ]
+        groq_client = MagicMock()
+        groq_client.chat.completions.create.return_value.choices[0].message.content = (
+            "1 | 92%\n0 | 85%"
+        )
+
+        with (
+            patch.dict("os.environ", {"GROQ_API_KEY": "test-key"}),
+            patch("job_engine.services.get_jobs", return_value=job_source),
+            patch("job_engine.services.Groq", return_value=groq_client),
+        ):
+            recommendations = list(recommended_jobs(["Python"]))
+
+        self.assertEqual(
+            recommendations,
+            [
+                "92% - Data Analyst - Example | apply: https://jobs.example/analyst\n"
+                "85% - Python Developer - Acme | apply: https://jobs.example/python"
+            ],
+        )

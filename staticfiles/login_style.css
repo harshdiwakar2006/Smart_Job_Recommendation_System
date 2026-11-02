@@ -11,7 +11,7 @@
 }
 
 .forgot-password a {
-    color: #1769aa;
+    color: #0F6E5B;
 
     text-decoration: none;
 
@@ -28,7 +28,7 @@
 .container > h2 {
     text-align: center;
 
-    color: #222;
+    color: #12172B;
 
     margin-bottom: 8px;
 }
@@ -39,4 +39,3 @@
 button {
     margin-top: 2px;
 }
-

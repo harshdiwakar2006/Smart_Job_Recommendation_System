@@ -10,7 +10,7 @@ from .models import Resume
 
 class GenerateResumeViewTests(TestCase):
     @patch("resume.views.generate_resume")
-    def test_generated_resume_is_saved_to_users_profile(self, generate_resume):
+    def test_generated_resume_is_saved_once_and_reused(self, generate_resume):
         user = User.objects.create_user(
             username="candidate@example.com",
             password="test-password",
@@ -44,3 +44,11 @@ class GenerateResumeViewTests(TestCase):
         self.assertEqual(response.context["resume"], generated_content)
         saved_resume = Resume.objects.get(profile=profile)
         self.assertEqual(saved_resume.content, generated_content)
+        generate_resume.assert_called_once()
+
+        response = self.client.get(reverse("generate_resume"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["resume"], saved_resume.content)
+        self.assertEqual(Resume.objects.filter(profile=profile).count(), 1)
+        generate_resume.assert_called_once()

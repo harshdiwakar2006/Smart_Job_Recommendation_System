@@ -1,0 +1,133 @@
+:root {
+    --theme-bg: #F5F6F8;
+    --theme-surface: #FFFFFF;
+    --theme-ink: #12172B;
+    --theme-muted: #4A5066;
+    --theme-line: #E2E4EA;
+    --theme-brand: #0F6E5B;
+    --theme-brand-ink: #FFFFFF;
+    --theme-brand-hover: #0B594A;
+    --theme-accent: #C8862A;
+    --theme-accent-soft: #FBF0DF;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --theme-bg: #14161F;
+        --theme-surface: #1B1E29;
+        --theme-ink: #EDEEF3;
+        --theme-muted: #A8ACBD;
+        --theme-line: #2B2F3D;
+        --theme-brand: #4FBFA3;
+        --theme-brand-ink: #14161F;
+        --theme-brand-hover: #68D0B3;
+        --theme-accent: #E2A73E;
+        --theme-accent-soft: #2E260F;
+    }
+}
+
+:root[data-theme="dark"] {
+    --theme-bg: #14161F;
+    --theme-surface: #1B1E29;
+    --theme-ink: #EDEEF3;
+    --theme-muted: #A8ACBD;
+    --theme-line: #2B2F3D;
+    --theme-brand: #4FBFA3;
+    --theme-brand-ink: #14161F;
+    --theme-brand-hover: #68D0B3;
+    --theme-accent: #E2A73E;
+    --theme-accent-soft: #2E260F;
+}
+
+body:not(.resume-document) {
+    color: var(--theme-ink);
+    font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+body:not(.resume-document) * {
+    font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.auth-page {
+    --ink: var(--theme-ink);
+    --ink-soft: var(--theme-muted);
+    --paper: var(--theme-surface);
+    --panel: var(--theme-bg);
+    --line: var(--theme-line);
+    --teal: var(--theme-brand);
+    --teal-hover: var(--theme-brand-hover);
+}
+
+body:not(.resume-document) h1,
+body:not(.resume-document) h2,
+body:not(.resume-document) h3 {
+    font-family: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+}
+
+body:not(.resume-document) :focus-visible {
+    outline: 3px solid var(--theme-accent);
+    outline-offset: 2px;
+}
+
+body:not(.resume-document) input:not([type="file"]),
+body:not(.resume-document) textarea,
+body:not(.resume-document) select {
+    color: var(--theme-ink);
+    background-color: var(--theme-surface);
+    border-color: var(--theme-line);
+    border-radius: 10px;
+    font-family: inherit;
+}
+
+body:not(.resume-document) button {
+    font-family: inherit;
+}
+
+.auth-page .container {
+    color: var(--theme-ink);
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-line);
+    border-radius: 18px;
+}
+
+.auth-page input:not([type="file"]) {
+    color: var(--theme-ink);
+    background-color: var(--theme-surface);
+}
+
+.auth-page button,
+body:not(.resume-document) .main-content button,
+body:not(.resume-document) .add-btn,
+body:not(.resume-document) .save-btn,
+body:not(.resume-document) .preview-btn {
+    border-radius: 10px;
+}
+
+body:not(.resume-document) .chips button {
+    border-radius: 99px;
+}
+
+body:not(.resume-document) .acts button,
+body:not(.resume-document) .stabs button {
+    border-radius: 8px;
+}
+
+body:not(.resume-document) .job,
+body:not(.resume-document) .notice {
+    border-radius: 12px;
+}
+
+body:not(.resume-document) a:not(.btn) {
+    color: var(--theme-brand);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body:not(.resume-document) *,
+    body:not(.resume-document) *::before,
+    body:not(.resume-document) *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

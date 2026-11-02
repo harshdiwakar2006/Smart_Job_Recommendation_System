@@ -1,8 +1,11 @@
-import os
 import json
-import requests
+import os
+import re
+from urllib.parse import urlsplit
+
 from dotenv import load_dotenv
 from groq import Groq
+import requests
 
 load_dotenv()
 
@@ -63,17 +66,39 @@ def slim_job(job, description_limit=1200):
         import re
         description = re.sub(r"<[^>]+>", " ", description)
     description = " ".join(description.split())[:description_limit]
+    apply_url = next(
+        (
+            job.get(field)
+            for field in (
+                "applyUrl",
+                "apply_url",
+                "applyLink",
+                "apply_link",
+                "applicationUrl",
+                "application_url",
+                "jobUrl",
+                "job_url",
+                "url",
+                "link",
+            )
+            if isinstance(job.get(field), str) and job.get(field).strip()
+        ),
+        "",
+    )
+    try:
+        parsed_url = urlsplit(apply_url)
+    except ValueError:
+        apply_url = ""
+    else:
+        if parsed_url.scheme.lower() not in {"http", "https"} or not parsed_url.netloc:
+            apply_url = ""
 
     return {
         "title": title,
         "company": company,
         "description": description,
+        "apply_url": apply_url,
     }
-
-
-def chunk_list(items, size):
-    for i in range(0, len(items), size):
-        yield items[i:i + size]
 
 
 # -----------------------------
@@ -101,7 +126,18 @@ def recommended_jobs(skills):
     slimmed_jobs = [slim_job(job) for job in jobs]
 
     BATCH_SIZE = 8  # tune this down further if you still hit length errors
-    for batch in chunk_list(slimmed_jobs, BATCH_SIZE):
+    job_id_pattern = re.compile(r"^\s*(\d+)\s*\|\s*(\d+(?:\.\d+)?)\s*%?\s*$")
+    for batch_start in range(0, len(slimmed_jobs), BATCH_SIZE):
+        batch = slimmed_jobs[batch_start:batch_start + BATCH_SIZE]
+        prompt_batch = [
+            {
+                "job_id": batch_start + index,
+                "title": job["title"],
+                "company": job["company"],
+                "description": job["description"],
+            }
+            for index, job in enumerate(batch)
+        ]
         prompt = f"""
 You are a job recommendation system.
 
@@ -109,11 +145,11 @@ Candidate skills:
 {json.dumps(user_skills)}
 
 Here is a list of jobs:
-{json.dumps(batch, indent=2)}
+{json.dumps(prompt_batch, indent=2)}
 
-Output ONLY the jobs in this batch, sorted in descending order by skill matching percentage.
-For each job output exactly this format, nothing else:
-<percentage>% - <job title> - <company>
+Rank the jobs in this batch by skill match, highest first.
+Output ONLY each recommended job's id and match percentage in this exact format:
+<job_id> | <percentage>%
 
 No explanations, no headers, no extra text.
 """
@@ -133,4 +169,30 @@ No explanations, no headers, no extra text.
             temperature=0
         )
 
-        yield response.choices[0].message.content or ""
+        scored_jobs = []
+        seen_job_ids = set()
+        for line in (response.choices[0].message.content or "").splitlines():
+            match = job_id_pattern.match(line)
+            if not match:
+                continue
+            job_id, score = match.groups()
+            if job_id in seen_job_ids:
+                continue
+            local_index = int(job_id) - batch_start
+            if local_index < 0 or local_index >= len(batch):
+                continue
+            seen_job_ids.add(job_id)
+            job = batch[local_index]
+            scored_jobs.append(
+                (
+                    float(score),
+                    job,
+                )
+            )
+
+        scored_jobs.sort(key=lambda result: result[0], reverse=True)
+        yield "\n".join(
+            f"{score:g}% - {job['title']} - {job['company']}"
+            + (f" | apply: {job['apply_url']}" if job["apply_url"] else "")
+            for score, job in scored_jobs
+        )

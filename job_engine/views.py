@@ -1,6 +1,7 @@
 import json
 import logging
 import re
+from urllib.parse import urlsplit
 
 from django.contrib.auth.decorators import login_required
 from accounts.models import Profile
@@ -22,6 +23,20 @@ def parse_results(batches):
     jobs = []
     for batch in batches:
         for line in (batch or "").splitlines():
+            apply_url = ""
+            if " | apply: " in line:
+                line, candidate_url = line.rsplit(" | apply: ", 1)
+                candidate_url = candidate_url.strip()
+                try:
+                    parsed_url = urlsplit(candidate_url)
+                except ValueError:
+                    parsed_url = None
+                if (
+                    parsed_url
+                    and parsed_url.scheme.lower() in {"http", "https"}
+                    and parsed_url.netloc
+                ):
+                    apply_url = candidate_url
             match = LINE_RE.match(line)
             if not match:
                 continue  # skip blank/unexpected lines
@@ -31,6 +46,7 @@ def parse_results(batches):
                     "score": float(score),
                     "title": title.strip(),
                     "company": company.strip(),
+                    "apply_url": apply_url,
                 }
             )
 

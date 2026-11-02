@@ -11,24 +11,30 @@ from .models import Resume
 def generate_resume_view(request):
 
     try:
-        candidate_data = get_candidate_data(request.user)
-
-        generated_resume = generate_resume(
-            candidate_data=candidate_data,
-            job_description="",
+        profile = request.user.profile
+        resume_record = (
+            Resume.objects.filter(profile=profile)
+            .order_by("-updated_at", "-pk")
+            .first()
         )
 
-        # Save generated resume to database
-        Resume.objects.create(
-            profile=request.user.profile,
-            content=generated_resume,
-        )
+        if resume_record is None:
+            candidate_data = get_candidate_data(request.user)
+            generated_resume = generate_resume(
+                candidate_data=candidate_data,
+                job_description="",
+            )
+            resume_record = Resume.objects.create(
+                profile=profile,
+                content=generated_resume,
+            )
+            resume_record.refresh_from_db(fields=("content",))
 
         return render(
             request,
             "resume_preview.html",
             {
-                "resume": generated_resume,
+                "resume": resume_record.content,
             },
         )
 

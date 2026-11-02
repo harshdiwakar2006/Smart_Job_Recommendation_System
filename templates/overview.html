@@ -10,17 +10,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6f5fb; --surface:#ffffff; --ink:#1c1a3a; --muted:#5b5a78; --line:#dedcee;
-  --brand:#4f46e5; --brand-ink:#ffffff; --hi:#f59e0b; --hi-bg:#fff2d6; --err:#c2261d;
+  --bg:#F5F6F8; --surface:#FFFFFF; --ink:#12172B; --muted:#4A5066; --line:#E2E4EA;
+  --brand:#0F6E5B; --brand-ink:#FFFFFF; --hi:#C8862A; --hi-bg:#FBF0DF; --err:#B5483A;
   color-scheme:light;
   box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#12112b; --surface:#1d1c42; --ink:#ecebff; --muted:#a8a6cc; --line:#37356f;
-  --brand:#8f8bff; --brand-ink:#0f0e2a; --hi:#ffb45c; --hi-bg:#3d2d19; --err:#ff8f86; color-scheme:dark;}}
+  --bg:#14161F; --surface:#1B1E29; --ink:#EDEEF3; --muted:#A8ACBD; --line:#2B2F3D;
+  --brand:#4FBFA3; --brand-ink:#14161F; --hi:#E2A73E; --hi-bg:#2E260F; --err:#E37F70; color-scheme:dark;}}
 :root[data-theme="dark"]{
-  --bg:#12112b; --surface:#1d1c42; --ink:#ecebff; --muted:#a8a6cc; --line:#37356f;
-  --brand:#8f8bff; --brand-ink:#0f0e2a; --hi:#ffb45c; --hi-bg:#3d2d19; --err:#ff8f86; color-scheme:dark;}
+  --bg:#14161F; --surface:#1B1E29; --ink:#EDEEF3; --muted:#A8ACBD; --line:#2B2F3D;
+  --brand:#4FBFA3; --brand-ink:#14161F; --hi:#E2A73E; --hi-bg:#2E260F; --err:#E37F70; color-scheme:dark;}
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -41,7 +41,7 @@ nav{display:flex;gap:10px;align-items:center}
 .hero h1{font-size:clamp(38px,5.6vw,64px);font-weight:800}
 .hero p{color:var(--muted);font-size:19px;max-width:46ch;margin:20px 0 28px}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
-.demo{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 18px 40px -24px rgba(28,26,58,.4)}
+.demo{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 18px 40px -24px rgba(18,23,43,.24)}
 .who{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
 .who b{font:700 18px "Bricolage Grotesque",sans-serif}
 .who span{color:var(--muted);font-size:14px}
@@ -75,7 +75,7 @@ nav{display:flex;gap:10px;align-items:center}
 .pre.in{opacity:1;transform:none}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:12px;display:flex;gap:14px;align-items:center;transition:.3s;z-index:50;font-size:15px;width:max-content;max-width:calc(100vw - 28px)}
 .toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-.toast button{background:var(--hi);color:#1c1a3a;border:0;border-radius:8px;padding:6px 12px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
+.toast button{background:var(--hi);color:#12172B;border:0;border-radius:8px;padding:6px 12px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer}
 .pw{position:relative}.pw input{padding-right:64px}
 .pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--brand);font:600 14px "Source Sans 3",sans-serif;cursor:pointer;padding:6px 8px}
 .meter{height:5px;background:var(--bg);border-radius:9px;margin-top:8px;overflow:hidden}
@@ -84,7 +84,7 @@ nav{display:flex;gap:10px;align-items:center}
 .ill{width:100%;max-width:170px;height:auto;display:block;margin-bottom:10px}
 .player{padding:60px 0 8px}
 .player h2{margin-bottom:22px}
-.stage{position:relative;aspect-ratio:16/9;background:#1c1a3a;border:1px solid #37356f;color:#fff;border-radius:18px;overflow:hidden}
+.stage{position:relative;aspect-ratio:16/9;background:#12172B;border:1px solid #2B2F3D;color:#fff;border-radius:18px;overflow:hidden}
 .scene{position:absolute;inset:0;padding:5% 7%;display:flex;flex-direction:column;justify-content:center;gap:5%;opacity:0;transition:opacity .4s;pointer-events:none}
 .scene.on{opacity:1}
 .scene h3{font-size:clamp(17px,3.2vw,30px);color:#fff}
@@ -93,10 +93,10 @@ nav{display:flex;gap:10px;align-items:center}
 .on .sc-chips span{animation:pop .4s forwards;animation-delay:calc(var(--n)*.35s)}
 .sc-bar{display:grid;grid-template-columns:34% 1fr 12%;gap:10px;align-items:center;font-size:clamp(12px,1.9vw,16px)}
 .sc-bar i{display:block;height:10px;border-radius:9px;background:rgba(255,255,255,.15);position:relative;overflow:hidden}
-.sc-bar i::after{content:"";position:absolute;inset:0;width:var(--w);background:#ffb45c;border-radius:9px;transform:scaleX(0);transform-origin:left}
+.sc-bar i::after{content:"";position:absolute;inset:0;width:var(--w);background:#E2A73E;border-radius:9px;transform:scaleX(0);transform-origin:left}
 .on .sc-bar i::after{animation:grow 1s forwards;animation-delay:calc(var(--n)*.4s)}
 .sc-card{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;gap:12px;font-size:clamp(12px,2vw,17px);opacity:0;transform:translateX(-24px)}
-.sc-card b{color:#ffb45c}
+.sc-card b{color:#E2A73E}
 .on .sc-card{animation:pop .5s forwards;animation-delay:calc(var(--n)*.45s)}
 @keyframes pop{to{opacity:1;transform:none}}
 @keyframes grow{to{transform:none}}
@@ -127,6 +127,7 @@ footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-s
 }
 @media (prefers-reduced-motion:reduce){.bar i{animation:none}}
 </style>
+<link rel="stylesheet" href="{% static 'theme.css' %}">
 </head>
 <body>
 <div class="wrap">
